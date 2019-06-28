@@ -37,23 +37,48 @@ window.addEventListener('scroll', e => {
 })
 
 const animationCallback = () => {
-    console.log("animation callback start");
     const animate = [...document.querySelectorAll('.animate')];
     animate.forEach((el) => {
         const idx = [...el.parentNode.children].findIndex(i => i === el);
         const tween = tweens[idx]
         const h1 = h1s[idx];
         const viewportOffset = el.getBoundingClientRect();
-        const h1BoundingRect = h1.getBoundingClientRect();
+
+        // here's a fun diagram of this...
+
+        // thinking we do something where animation should take 2 of the height to complete
+
         
-        // console.log( el.id, direction > 0 ? 'DOWN' : 'UP', scrollPosition, viewportOffset.height, viewportOffset.top);
-        // console.log( elBoundingRect.height, elBoundingRect.top)
-        // console.log(scrollPosition / window.outerHeight )
-        const progress = (viewportOffset.height - viewportOffset.top) / viewportOffset.height;
-        console.log(el.id, progress, viewportOffset.height, viewportOffset.top, (viewportOffset.height - viewportOffset.top) )
+        /* this is just one section
+                ----------------
+                |               | -
+                |               |  | this would be what's above the viewport
+                |               | -
+                |===============| -
+                |               |  | 
+                |               |  | this is what's visible inside of the viewport
+                |               |  |
+                |===============| -
+                |               | -
+                |               |  |
+                |               |  | this is what's left of element to show
+                |               |  |
+                |               | -
+                ----------------
+        */
 
+        const offset = -200;
+        const ht = viewportOffset.height / 2;
+        const offsetTop = viewportOffset.top + ht + offset;
 
-        tween.progress(progress * 100 / 100);
+        const progress = offsetTop / ht;
+        const viewportSize = window.innerHeight;
+        const amountSeen = viewportOffset.top < 0 ? viewportOffset.top : 0;
+        const amountVisible = (viewportOffset.top * -1) 
+        const animationArea = viewportOffset.height / 2;
+        const roundProgress = progress / 100 * 100;
+
+        tween.progress(roundProgress);
         // const progress = 
 
     })
